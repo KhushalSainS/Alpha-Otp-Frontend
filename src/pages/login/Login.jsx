@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from 'react';
 import { Eye, EyeOff } from "lucide-react"
 import OopsPopup from "../../components/oops/oops"
-import { StoreContext } from "../../../context/StoreContext"
+import { StoreContext } from "../../context/StoreContext"
 import "./login.css"
 
 export default function LoginPage() {
@@ -28,6 +28,7 @@ export default function LoginPage() {
       if (response.data && response.data.token) {
         // Store the token and handle successful login
         setToken(response.data.token)
+        window.location.href = "/";
         // You could redirect the user here or update the UI
       } else {
         setShowOops(true)

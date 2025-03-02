@@ -9,6 +9,7 @@ import Pricing from './components/pricing/Pricing';
 import Login from './pages/login/Login';
 import SignUp from './pages/signup/singup';
 import ApiPage from './pages/api/studio';
+import StoreContextProvider from './context/StoreContext'; // Make sure path is correct
 
 function HomePage() {
   return (
@@ -38,20 +39,22 @@ function Layout({ children }) {
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Routes>
-          <Route path="/" element={
-            <Layout>
-              <HomePage />
-            </Layout>
-          } />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/studio" element={<ApiPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <StoreContextProvider>
+      <Router>
+        <div className="app">
+          <Routes>
+            <Route path="/" element={
+              <Layout>
+                <HomePage />
+              </Layout>
+            } />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/studio" element={<ApiPage />} />
+          </Routes>
+        </div>
+      </Router>
+    </StoreContextProvider>
   );
 }
 

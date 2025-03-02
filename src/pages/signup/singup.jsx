@@ -1,10 +1,47 @@
-import React from "react"
+import React, { useState, useContext } from "react"
+import axios from "axios"
+import { StoreContext } from "../../context/StoreContext"
 import "./signup.css"
 
 export default function SignupPage() {
-  const handleSignup = (e) => {
+  const { url, setToken } = useContext(StoreContext)
+  const [showOops, setShowOops] = useState(false)
+  
+  // Form state
+  const [companyName, setCompanyName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [contactNumber, setContactNumber] = useState("")
+  const [taxIdentificationNumber, setTaxIdentificationNumber] = useState("")
+  const [businessPan, setBusinessPan] = useState("")
+  const [registeredBusinessId, setRegisteredBusinessId] = useState("")
+
+  const handleSignup = async (e) => {
     e.preventDefault()
-    // Handle signup logic here
+    
+    try {
+      const response = await axios.post(`${url}/api/user/register`, {
+        companyName,
+        email,
+        password,
+        contactNumber,
+        taxIdentificationNumber,
+        businessPan,
+        registeredBusinessId
+      });
+      
+      if (response.data && response.data.token) {
+        // Store the token and handle successful signup
+        setToken(response.data.token)
+        // Redirect or update UI as needed
+        window.location.href = "/"; // Example redirect
+      } else {
+        setShowOops(true)
+      }
+    } catch (error) {
+      console.error("Signup failed:", error)
+      setShowOops(true)
+    }
   }
 
   return (
@@ -54,37 +91,86 @@ export default function SignupPage() {
           <form onSubmit={handleSignup} className="signup-form">
             <div className="form-group">
               <label htmlFor="companyName">Company Name</label>
-              <input id="companyName" type="text" required className="form-input" />
+              <input 
+                id="companyName" 
+                type="text" 
+                required 
+                className="form-input"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)} 
+              />
             </div>
 
             <div className="form-group">
-              <label htmlFor="companyEmail">Company Email</label>
-              <input id="companyEmail" type="email" required className="form-input" />
+              <label htmlFor="email">Company Email</label>
+              <input 
+                id="email" 
+                type="email" 
+                required 
+                className="form-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label htmlFor="password">Create Password</label>
-              <input id="password" type="password" required className="form-input" />
+              <input 
+                id="password" 
+                type="password" 
+                required 
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label htmlFor="contactNumber">Company Contact Number</label>
-              <input id="contactNumber" type="tel" required className="form-input" />
+              <input 
+                id="contactNumber" 
+                type="tel" 
+                required 
+                className="form-input"
+                value={contactNumber}
+                onChange={(e) => setContactNumber(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
-              <label htmlFor="taxId">Tax Identification Number</label>
-              <input id="taxId" type="text" required className="form-input" />
+              <label htmlFor="taxIdentificationNumber">Tax Identification Number</label>
+              <input 
+                id="taxIdentificationNumber" 
+                type="text" 
+                required 
+                className="form-input"
+                value={taxIdentificationNumber}
+                onChange={(e) => setTaxIdentificationNumber(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label htmlFor="businessPan">Business PAN</label>
-              <input id="businessPan" type="text" required className="form-input" />
+              <input 
+                id="businessPan" 
+                type="text" 
+                required 
+                className="form-input"
+                value={businessPan}
+                onChange={(e) => setBusinessPan(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
-              <label htmlFor="businessId">Registered Business ID</label>
-              <input id="businessId" type="text" required className="form-input" />
+              <label htmlFor="registeredBusinessId">Registered Business ID</label>
+              <input 
+                id="registeredBusinessId" 
+                type="text" 
+                required 
+                className="form-input"
+                value={registeredBusinessId}
+                onChange={(e) => setRegisteredBusinessId(e.target.value)}
+              />
             </div>
 
             <button type="submit" className="signup-submit">
@@ -93,6 +179,16 @@ export default function SignupPage() {
           </form>
         </div>
       </div>
+      
+      {showOops && (
+        <div className="error-popup">
+          <div className="error-content">
+            <h3>Oops! Something went wrong</h3>
+            <p>Please check your information and try again.</p>
+            <button onClick={() => setShowOops(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
