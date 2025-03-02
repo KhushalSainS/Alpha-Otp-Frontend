@@ -1,0 +1,81 @@
+/* about-us.css */
+
+/* Section Container: "w-full py-12 md:py-16 lg:py-20 px-4" */
+.about-section {
+    width: 100%;
+    padding: 3rem 1rem; /* ~ py-12 px-4 */
+  }
+  
+  @media (min-width: 768px) {
+    .about-section {
+      padding: 4rem 1rem; /* ~ md:py-16 */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .about-section {
+      padding: 5rem 1rem; /* ~ lg:py-20 */
+    }
+  }
+  
+  /* Inner Container: "max-w-6xl mx-auto text-center" */
+  .about-container {
+    max-width: 72rem; /* ~ 6xl in Tailwind (1152px) */
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  /* Title: "text-3xl md:text-4xl font-bold mb-12 text-blue-600" */
+  .about-title {
+    font-size: 1.875rem; /* ~ text-3xl (30px) */
+    font-weight: bold;
+    color: #2563eb; /* ~ text-blue-600 */
+    margin-bottom: 3rem; /* ~ mb-12 */
+  }
+  
+  @media (min-width: 768px) {
+    .about-title {
+      font-size: 2.25rem; /* ~ text-4xl (36px) */
+    }
+  }
+  
+  /* White box: "bg-white rounded-2xl shadow-lg p-6 md:p-10 text-left" */
+  .about-content-box {
+    background-color: #fff;
+    border-radius: 1rem; /* ~ rounded-2xl */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* ~ shadow-lg */
+    padding: 1.5rem; /* ~ p-6 */
+    text-align: left; /* override center text from container */
+  }
+  
+  @media (min-width: 768px) {
+    .about-content-box {
+      padding: 2.5rem; /* ~ md:p-10 */
+    }
+  }
+  
+  /* Paragraphs: "text-gray-700 leading-relaxed" => subtle text color + line spacing */
+  .about-text-block p {
+    color: #374151; /* ~ text-gray-700 */
+    line-height: 1.7; /* ~ leading-relaxed */
+    margin-bottom: 1.5rem;
+  }
+  
+  /* "mt-10 text-center => text-xl md:text-2xl font-semibold text-blue-600" */
+  .about-subtitle {
+    margin-top: 2.5rem; /* ~ mt-10 */
+    text-align: center;
+  }
+  
+  .about-subtitle h3 {
+    font-size: 1.25rem; /* ~ text-xl */
+    font-weight: 600;   /* ~ font-semibold */
+    color: #2563eb;     /* ~ text-blue-600 */
+  }
+  
+  @media (min-width: 768px) {
+    .about-subtitle h3 {
+      font-size: 1.5rem; /* ~ text-2xl */
+    }
+  }
+  

@@ -1,0 +1,292 @@
+/* hero.css */
+
+/* -------------------------------
+   Base / Reset
+------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* -------------------------------
+   Hero Section
+   (similar to "relative w-full overflow-hidden bg-slate-50 py-12 md:py-16 lg:py-20")
+------------------------------- */
+.hero-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #f8fafc; /* ~ bg-slate-50 */
+  padding: 3rem 1rem;        /* ~ py-12 px-4 (adjust for md:py-16, etc.) */
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    padding: 4rem 1rem; /* ~ md:py-16 */
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section {
+    padding: 5rem 1rem; /* ~ lg:py-20 */
+  }
+}
+
+/* 
+  The huge "OTP" text in background:
+  "absolute inset-0 z-0 flex items-center justify-center opacity-5 text-[30rem]" 
+*/
+.hero-otp-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.05; /* ~ .opacity-5 */
+}
+
+.hero-otp-text {
+  font-size: 30rem; /* ~ text-[30rem], can adjust as needed */
+  font-weight: bold;
+  color: #2563eb;   /* ~ text-blue-600 */
+}
+
+@media (min-width: 768px) {
+  .hero-otp-text {
+    font-size: 40rem; /* ~ md:text-[40rem] */
+  }
+}
+
+/* 
+  Container: "container relative z-10 mx-auto px-4"
+*/
+.hero-container {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px; /* ~ container width */
+  margin: 0 auto;
+  padding: 0 1rem;    /* ~ px-4 */
+}
+
+/* 
+  Row: "flex flex-col items-center gap-8 lg:flex-row lg:items-stretch lg:gap-12"
+*/
+.hero-content-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem; /* ~ gap-8 */
+}
+
+@media (min-width: 1024px) {
+  .hero-content-row {
+    flex-direction: row;   /* ~ lg:flex-row */
+    align-items: stretch;  /* ~ lg:items-stretch */
+    gap: 3rem;             /* ~ lg:gap-12 */
+  }
+}
+
+/* 
+  Left Content:
+  "flex flex-1 flex-col justify-center space-y-6 pt-8 text-center lg:max-w-xl lg:text-left"
+*/
+.hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem; /* ~ space-y-6 */
+  padding-top: 2rem; /* ~ pt-8 */
+  text-align: center;
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .hero-left {
+    max-width: 48rem; /* ~ lg:max-w-xl (maybe 36rem or 48rem) */
+    text-align: left; /* ~ lg:text-left */
+  }
+}
+
+/* 
+  Title: "text-4xl font-bold tracking-tight text-slate-900 md:text-5xl lg:text-6xl"
+*/
+.hero-title {
+  font-size: 2.25rem; /* ~ text-4xl (36px) */
+  font-weight: bold;
+  color: #0f172a;     /* ~ text-slate-900 */
+  line-height: 1.2;   /* "tracking-tight" is letter-spacing: -0.025em, optional */
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 3rem;  /* ~ md:text-5xl (48px) */
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-title {
+    font-size: 3.75rem; /* ~ lg:text-6xl (60px) */
+  }
+}
+
+/* 
+  Subtitle: "text-lg text-slate-600"
+*/
+.hero-subtitle {
+  font-size: 1.125rem; /* ~ text-lg (18px) */
+  color: #475569;      /* ~ text-slate-600 */
+  line-height: 1.6;
+}
+
+/* 
+  CTA Button:
+  "inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-blue-700"
+*/
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px; /* ~ rounded-full */
+  background-color: #2563eb; /* ~ bg-blue-600 */
+  color: #fff;
+  padding: 0.75rem 1.5rem; /* ~ px-6 py-3 */
+  font-size: 1rem;         /* ~ text-base */
+  font-weight: 500;        /* ~ font-medium */
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.hero-button:hover {
+  background-color: #1d4ed8; /* ~ hover:bg-blue-700 */
+}
+
+/* 
+  Right Content:
+  "relative flex-1"
+*/
+.hero-right {
+  position: relative;
+  flex: 1;
+}
+
+/* 
+  Blue Card:
+  "overflow-hidden rounded-[2rem] bg-blue-600 p-6 text-white md:p-8"
+*/
+.hero-blue-card {
+  overflow: hidden;
+  border-radius: 2rem; /* ~ rounded-[2rem] */
+  background-color: #2563eb; /* ~ bg-blue-600 */
+  color: #fff;
+  padding: 1.5rem; /* ~ p-6 */
+}
+
+@media (min-width: 768px) {
+  .hero-blue-card {
+    padding: 2rem; /* ~ md:p-8 */
+  }
+}
+
+/* 
+  "We Provide" Title: "mb-6 text-2xl font-bold"
+*/
+.blue-card-title {
+  margin-bottom: 1.5rem; /* ~ mb-6 */
+  font-size: 1.5rem;     /* ~ text-2xl */
+  font-weight: bold;
+}
+
+/* 
+  List: "mb-8 space-y-4"
+*/
+.blue-card-list {
+  margin-bottom: 2rem; /* ~ mb-8 */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* ~ space-y-4 */
+}
+
+.blue-card-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* ~ gap-3 */
+}
+
+.blue-card-icon {
+  width: 1.25rem; /* ~ h-5 w-5 */
+  height: 1.25rem;
+  background-color: rgba(255, 255, 255, 0.125); /* ~ bg-white/20 */
+  padding: 0.25rem; /* ~ p-1 */
+  border-radius: 9999px; /* ~ rounded-full */
+}
+
+/* 
+  Verification Code Image + Overlay:
+  "relative mt-6"
+*/
+.hero-verification-wrapper {
+  position: relative;
+  margin-top: 1.5rem; /* ~ mt-6 */
+}
+
+/* "rounded-lg object-cover" */
+.hero-verify-image {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+/* 
+  "absolute -bottom-6 left-1/2 w-[90%] -translate-x-1/2
+   rounded-lg bg-white p-4 shadow-lg"
+*/
+.hero-verification-card {
+  position: absolute;
+  bottom: -1.5rem; /* ~ -bottom-6 */
+  left: 50%;       /* ~ left-1/2 */
+  width: 90%;
+  transform: translateX(-50%); /* ~ -translate-x-1/2 */
+  background-color: #fff;
+  padding: 1rem; /* ~ p-4 */
+  border-radius: 0.5rem; /* ~ rounded-lg */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 
+  "text-center text-gray-700"
+*/
+.verification-title {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: #374151; /* ~ text-gray-700 */
+}
+
+/* 
+  "flex justify-center gap-2"
+*/
+.verification-codes {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.verification-code-box {
+  width: 2rem;  /* ~ w-8 */
+  height: 2rem; /* ~ h-8 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db; /* ~ border-gray-300 */
+  background-color: #f9fafb; /* ~ bg-gray-50 */
+  color: #374151;            /* ~ text-gray-700 */
+  font-weight: 500;
+}

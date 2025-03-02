@@ -1,0 +1,221 @@
+/* navbar.css */
+
+/* --------------------------------
+   Base / Reset
+--------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  /* --------------------------------
+     Navbar Container
+     (similar to "sticky top-0 z-50 w-full bg-[#3366FF] text-white")
+  --------------------------------- */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background-color: #3366ff;
+    color: #fff;
+  }
+  
+  /* Container: "container mx-auto flex h-16 items-center justify-between px-4" */
+  .navbar-container {
+    max-width: 1200px; /* typical container max width */
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem; /* ~ h-16 (64px) */
+    padding: 0 1rem; /* ~ px-4 */
+  }
+  
+  /* --------------------------------
+     Logo
+     (similar to "flex items-center gap-2")
+  --------------------------------- */
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .navbar-logo-icon {
+    width: 2rem; /* ~ h-8 w-8 */
+    height: 2rem;
+    color: #f472b6; /* text-pink-400 in tailwind */
+  }
+  
+  .navbar-logo-text {
+    font-size: 1.25rem; /* ~ text-xl */
+    font-weight: bold;
+  }
+  
+  /* --------------------------------
+     Desktop Navigation
+     (similar to "hidden md:flex items-center space-x-8")
+  --------------------------------- */
+  .navbar-desktop {
+    display: none; /* hidden by default, show on md+ */
+    align-items: center;
+    gap: 2rem; /* ~ space-x-8 */
+  }
+  
+  .navbar-link {
+    font-weight: 500; /* ~ font-medium */
+    text-decoration: none;
+    color: #fff;
+    position: relative;
+    transition: color 0.2s;
+  }
+  
+  .navbar-link:hover {
+    color: #dce2ff; /* ~ hover:text-blue-100 */
+  }
+  
+  
+  .navbar-link-active::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #fff;
+  }
+  
+  /* --------------------------------
+     Desktop Login Button
+     (similar to "hidden md:flex bg-white text-[#3366FF] hover:bg-blue-50")
+  --------------------------------- */
+  .navbar-login-button {
+    display: none; /* hidden on mobile, shown on md+ */
+    background-color: #fff;
+    color: #3366ff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  /* Hover effect */
+  .navbar-login-button:hover {
+    background-color: #ebf2ff; /* ~ hover:bg-blue-50 */
+  }
+  
+  /* --------------------------------
+     Show Desktop Items at md+ 
+     (mimic "md:flex" in Tailwind)
+  --------------------------------- */
+  @media (min-width: 768px) {
+    .navbar-desktop {
+      display: flex;
+    }
+    .navbar-login-button {
+      display: inline-block;
+    }
+  }
+  
+  /* --------------------------------
+     Mobile Menu Button (Hamburger)
+     (similar to "md:hidden flex flex-col space-y-1.5")
+  --------------------------------- */
+  .navbar-hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem; /* ~ space-y-1.5 */
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  /* Hide hamburger on md+ */
+  @media (min-width: 768px) {
+    .navbar-hamburger {
+      display: none;
+    }
+  }
+  
+  /* Hamburger lines: "block h-0.5 w-6 bg-white" + transforms */
+  .hamburger-line {
+    width: 1.5rem;  /* ~ w-6 */
+    height: 2px;    /* ~ h-0.5 */
+    background-color: #fff;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  
+  .line-top-open {
+    transform: translateY(6px) rotate(45deg);
+  }
+  
+  .line-middle-open {
+    opacity: 0;
+  }
+  
+  .line-bottom-open {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  
+  /* --------------------------------
+     Mobile Menu
+     (similar to "md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 or max-h-60")
+  --------------------------------- */
+  .navbar-mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+  
+  /* Show menu when open */
+  .navbar-mobile-menu.open {
+    max-height: 300px; /* ~ "max-h-60" => 240px, we can pick ~300px */
+  }
+  
+  @media (min-width: 768px) {
+    .navbar-mobile-menu {
+      display: none; /* hidden on md+ */
+    }
+  }
+  
+  /* Mobile menu items: "container mx-auto px-4 pb-4 flex flex-col space-y-4" */
+  .mobile-menu-link {
+    display: block;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #4f7ff2; /* ~ border-blue-400 */
+    font-weight: 500;
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.2s;
+  }
+  
+  .mobile-menu-link:hover {
+    color: #dce2ff;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+    width: 100%;
+    background-color: #fff;
+    color: #3366ff;
+    text-align: center;
+    padding: 0.5rem 0;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    margin-top: 0.5rem;
+  }
+  
+  .mobile-menu-button:hover {
+    background-color: #ebf2ff;
+  }
+  

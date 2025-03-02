@@ -1,0 +1,111 @@
+/* our-users.css */
+
+/* Section container: "w-full py-12 md:py-16 lg:py-20 px-4" */
+.users-section {
+    width: 100%;
+    padding: 3rem 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .users-section {
+      padding: 4rem 1rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .users-section {
+      padding: 5rem 1rem;
+    }
+  }
+  
+  /* Container: "max-w-6xl mx-auto text-center" */
+  .users-container {
+    max-width: 72rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  /* Title: "text-3xl md:text-4xl font-bold mb-12 text-blue-600" */
+  .users-title {
+    font-size: 1.875rem; /* ~ text-3xl */
+    font-weight: bold;
+    color: #2563eb; /* ~ text-blue-600 */
+    margin-bottom: 3rem; /* ~ mb-12 */
+  }
+  
+  @media (min-width: 768px) {
+    .users-title {
+      font-size: 2.25rem; /* ~ text-4xl */
+    }
+  }
+  
+  /* Grid: "flex flex-wrap justify-center gap-6 md:gap-10" */
+  .users-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem; /* ~ gap-6 on mobile */
+  }
+  
+  @media (min-width: 768px) {
+    .users-grid {
+      gap: 2.5rem; /* ~ md:gap-10 */
+    }
+  }
+  
+  /* 
+     Each circle: 
+     "w-24 h-24 md:w-32 md:h-32 rounded-full bg-white shadow-md flex items-center justify-center"
+  */
+  .user-circle {
+    width: 6rem;  /* ~ w-24 => 96px */
+    height: 6rem; /* ~ h-24 => 96px */
+    background-color: #fff;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ~ shadow-md */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @media (min-width: 768px) {
+    .user-circle {
+      width: 8rem;  /* ~ w-32 => 128px */
+      height: 8rem; /* ~ h-32 => 128px */
+    }
+  }
+  
+  /* 
+     Text inside circle: 
+     "text-lg md:text-xl font-semibold {user.color}"
+  */
+  .user-text {
+    font-size: 1.125rem; /* ~ text-lg */
+    font-weight: 600;
+  }
+  
+  @media (min-width: 768px) {
+    .user-text {
+      font-size: 1.25rem; /* ~ text-xl */
+    }
+  }
+  
+  /* 
+     Color classes (mapping from tailwind "text-amber-500", "text-orange-500", etc.)
+  */
+  .flipkart {
+    color: #d97706; /* ~ text-amber-500 (#f59e0b is amber-500 in tailwind, or #d97706) */
+  }
+  .amazon {
+    color: #ea580c; /* ~ text-orange-500 (#f97316 or #ea580c) */
+  }
+  .meta {
+    color: #db2777; /* ~ text-pink-500 (#ec4899 or #db2777) */
+  }
+  .google {
+    color: #3b82f6; /* ~ text-blue-500 */
+  }
+  .facebook {
+    color: #1e40af; /* ~ text-blue-600 (#2563eb or #1e40af) */
+  }
+  

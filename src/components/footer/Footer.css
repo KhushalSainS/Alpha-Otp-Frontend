@@ -1,0 +1,264 @@
+/* footer.css */
+
+/* --------------------------------
+   Base / Reset
+--------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .site-footer {
+    width: 100%;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* --------------------------------
+     CTA Section
+     (similar to "bg-gradient-to-b from-blue-600 to-blue-500 py-16 px-4 text-center text-white")
+  --------------------------------- */
+  .footer-cta {
+    background: linear-gradient(to bottom, #2563eb, #3b82f6); /* from-blue-600 to-blue-500 */
+    padding: 4rem 1rem; /* ~ py-16 px-4 */
+    text-align: center;
+    color: #fff;
+  }
+  
+  .footer-cta-title {
+    font-size: 1.875rem; /* ~ text-3xl (30px) */
+    font-weight: bold;
+    margin-bottom: 1rem; /* ~ mb-4 */
+  }
+  
+  @media (min-width: 768px) {
+    .footer-cta-title {
+      font-size: 2.25rem; /* ~ md:text-4xl (36px) */
+    }
+  }
+  
+  .footer-cta-subtitle {
+    font-size: 1.125rem; /* ~ text-lg (18px) */
+    margin-bottom: 2rem; /* ~ mb-8 */
+  }
+  
+  @media (min-width: 768px) {
+    .footer-cta-subtitle {
+      font-size: 1.25rem; /* ~ md:text-xl (20px) */
+    }
+  }
+  
+  /* 
+    CTA Button: 
+    "inline-flex items-center justify-center rounded-full bg-white text-blue-600 px-8 py-3 font-medium"
+  */
+  .footer-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px; /* ~ rounded-full */
+    background-color: #fff;
+    color: #2563eb; /* ~ text-blue-600 */
+    padding: 0.75rem 2rem; /* ~ px-8 py-3 */
+    font-weight: 500; /* ~ font-medium */
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  
+  .footer-cta-button:hover {
+    background-color: rgba(255, 255, 255, 0.9); /* ~ hover:bg-opacity-90 */
+  }
+  
+  /* --------------------------------
+     Main Footer Content
+     (similar to "bg-gradient-to-b from-blue-500 to-blue-600 text-white py-12 px-4 md:px-8")
+  --------------------------------- */
+  .footer-main {
+    background: linear-gradient(to bottom, #3b82f6, #2563eb); /* from-blue-500 to-blue-600 */
+    color: #fff;
+    padding: 3rem 1rem; /* ~ py-12 px-4 */
+  }
+  
+  @media (min-width: 768px) {
+    .footer-main {
+      padding: 3rem 2rem; /* ~ md:px-8 */
+    }
+  }
+  
+  /* 
+    Container: "container mx-auto max-w-6xl"
+    max-w-6xl in Tailwind is 72rem (1152px)
+  */
+  .footer-container {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+  
+  /* 
+    Grid: "grid grid-cols-1 md:grid-cols-3 gap-8"
+  */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem; /* ~ gap-8 is 2rem */
+  }
+  
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+
+  
+  .footer-column-title {
+    font-size: 1.25rem; /* ~ text-xl */
+    font-weight: 600;   /* ~ font-semibold */
+    margin-bottom: 1.5rem; /* ~ mb-6 */
+  }
+  
+  /* --------------------------------
+     Contact Info
+  --------------------------------- */
+  .footer-contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .footer-contact-item {
+    display: flex;
+    align-items: start;
+  }
+  
+  .footer-contact-icon {
+    margin-right: 0.75rem; /* ~ mr-3 */
+    margin-top: 0.25rem;   /* ~ mt-1 */
+    flex-shrink: 0;        /* prevent icon from shrinking */
+  }
+  
+  .footer-contact-subtext {
+    font-size: 0.875rem; /* ~ text-sm */
+    color: #cbd5e1;      /* ~ text-blue-100 */
+  }
+  
+  /* --------------------------------
+     Quick Links
+  --------------------------------- */
+  .footer-link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* ~ space-y-3 */
+  }
+  
+  .footer-link {
+    color: #fff;
+    text-decoration: none;
+    transition: text-decoration 0.2s;
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* --------------------------------
+     Services Provided
+  --------------------------------- */
+  .footer-services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem; /* ~ gap-3 */
+  }
+  
+  @media (min-width: 640px) {
+    .footer-services-grid {
+      grid-template-columns: repeat(2, 1fr); /* ~ sm:grid-cols-2 */
+    }
+  }
+  
+  .footer-service-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .footer-service-icon {
+    margin-right: 0.5rem;
+    color: #cbd5e1; /* ~ text-blue-100 */
+  }
+  
+  /* --------------------------------
+     Bottom Section
+     (similar to "mt-12 pt-8 border-t border-blue-400 flex flex-col md:flex-row justify-between items-center")
+  --------------------------------- */
+  .footer-bottom {
+    margin-top: 3rem;    /* ~ mt-12 */
+    padding-top: 2rem;   /* ~ pt-8 */
+    border-top: 1px solid #60a5fa; /* ~ border-blue-400 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem; /* spacing for stacked items on mobile */
+  }
+  
+  @media (min-width: 768px) {
+    .footer-bottom {
+      flex-direction: row; /* ~ md:flex-row */
+    }
+  }
+  
+  /* Social Icons: "flex space-x-4" */
+  .footer-social-icons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* Social Link: "bg-white p-2 rounded-full text-blue-600 hover:bg-blue-100" */
+  .footer-social-link {
+    background-color: #fff;
+    color: #2563eb;
+    border-radius: 9999px; /* ~ rounded-full */
+    padding: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .footer-social-link:hover {
+    background-color: #bfdbfe; /* ~ bg-blue-100 */
+  }
+  
+  .footer-social-icon {
+    width: 1.25rem; /* ~ h-5 w-5 */
+    height: 1.25rem;
+  }
+  
+  /* "text-center md:text-right text-sm" => we'll do it below */
+  .footer-copyright {
+    font-size: 0.875rem; /* ~ text-sm */
+    text-align: center;
+  }
+  
+  @media (min-width: 768px) {
+    .footer-copyright {
+      text-align: right; /* ~ md:text-right */
+    }
+  }
+  
+  /* 
+    sr-only for screen readers 
+    (since we have an icon link but want hidden text)
+  */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+  

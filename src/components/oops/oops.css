@@ -1,0 +1,153 @@
+/* oops-popup.css */
+
+/* 
+  Overlay: 
+  "fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+*/
+.oops-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 50;
+  }
+  
+  /* 
+    Popup Box:
+    "bg-white rounded-lg max-w-md w-full p-6 relative"
+  */
+  .oops-popup {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    max-width: 28rem; /* ~ max-w-md => 448px */
+    width: 100%;
+    padding: 1.5rem;
+    position: relative;
+  }
+  
+  /* 
+    Close Button:
+    "absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+  */
+  .oops-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: none;
+    border: none;
+    color: #9ca3af; /* ~ text-gray-400 */
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .oops-close:hover {
+    color: #4b5563; /* ~ text-gray-600 */
+  }
+  
+  /* 
+    Content: "flex flex-col items-center text-center"
+  */
+  .oops-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* 
+    Icon Container:
+    "bg-red-100 p-4 rounded-full mb-4"
+  */
+  .oops-icon {
+    background-color: #fee2e2; /* ~ bg-red-100 */
+    padding: 1rem;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+  }
+  
+  .icon-svg {
+    color: #ef4444; /* ~ text-red-500 */
+  }
+  
+  /* 
+    Title & Text
+    "text-2xl font-bold mb-2" 
+    "text-gray-600 mb-6"
+  */
+  .oops-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .oops-text {
+    color: #4b5563; /* ~ text-gray-600 */
+    margin-bottom: 1.5rem;
+  }
+  
+  /* 
+    Info Box:
+    "bg-gray-50 p-4 rounded-lg w-full mb-6"
+  */
+  .oops-info-box {
+    background-color: #f9fafb; /* ~ bg-gray-50 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .oops-info {
+    color: #374151; /* ~ text-gray-700 */
+  }
+  
+  /* 
+    Buttons:
+    "w-full space-y-3"
+  */
+  .oops-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  /* 
+    "bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full"
+    or variant="outline"
+  */
+  .oops-button {
+    display: inline-block;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  
+  /* Main (blue) button */
+  .main-button {
+    background-color: #2563eb; /* ~ bg-blue-600 */
+    color: #fff;
+    border: none;
+  }
+  
+  .main-button:hover {
+    background-color: #1d4ed8; /* ~ hover:bg-blue-700 */
+  }
+  
+  /* Outline button */
+  .outline-button {
+    background: none;
+    border: 1px solid #d1d5db; /* optional border or #2563eb if we want a blue outline */
+    color: #374151; /* ~ text-gray-700 */
+  }
+  
+  .outline-button:hover {
+    background-color: #f3f4f6; /* ~ hover:gray-100 or so */
+  }
+  
