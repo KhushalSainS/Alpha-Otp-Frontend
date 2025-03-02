@@ -4,7 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import OopsPopup from "../../components/oops/oops";
 import { StoreContext } from "../../context/StoreContext";
-import "./login.css";
+import "./Login.css";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
