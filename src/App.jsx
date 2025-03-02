@@ -41,21 +41,24 @@ function App() {
   return (
     <StoreContextProvider>
       <Router>
-        <div className="app">
-          <Routes>
-            {/* Routes with layout */}
-            <Route path="/" element={
-              <Layout>
-                <HomePage />
-              </Layout>
-            } />
-            
-            
-            {/* Other routes with layout */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/studio" element={ <ApiPage/>}/>
-          </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
+          <main className="py-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Routes>
+                {/* Routes with layout */}
+                <Route path="/" element={
+                  <Layout>
+                    <HomePage />
+                  </Layout>
+                } />
+                {/* Other routes with layout */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/studio" element={ <ApiPage/>}/>
+              </Routes>
+            </div>
+          </main>
         </div>
       </Router>
     </StoreContextProvider>
