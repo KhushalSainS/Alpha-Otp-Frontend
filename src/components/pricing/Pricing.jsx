@@ -13,7 +13,7 @@ import {
   X
 } from "lucide-react";
 import OopsPopup from "../oops/oops";
-import "./pricing.css";
+import "./Pricing.css";
 import { StoreContext } from "../../context/StoreContext";
 
 export default function Pricing() {
