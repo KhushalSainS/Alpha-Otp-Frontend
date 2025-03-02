@@ -1,35 +1,165 @@
-import React, { useState, useEffect } from "react"
-import { Trash2, Copy, X, Eye, EyeOff } from "lucide-react"
+import React, { useState, useEffect, useContext } from "react"
+import { Trash2, Copy, X, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react"
+import { StoreContext } from "../../context/StoreContext"
 import "./studio.css"
 
 /* --------------------------
-   Mock API Service
+   API Service
 -------------------------- */
-let mockApiKeys = []
-
-async function fetchApiKeys() {
-  // In a real app, you'd call your backend or database
-  return mockApiKeys
-}
-
-async function createApiKey({ name, email, password }) {
-  // In a real app, you'd call your backend or database
-  const id = Math.random().toString(36).substring(2, 15)
-  const value = `ey.Jhb6c1Oi.JTIlzT1NiIsInR5cCT4IkpXVC.J9.eyJhc2V5TIjoiZTkyZDUG${id}`
-
-  const newApiKey = {
-    id,
-    name,
-    value,
-    createdAt: new Date().toISOString(),
+async function fetchApiKeys(baseUrl, token) {
+  try {
+    const response = await fetch(`${baseUrl}/api/user/api-keys`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to fetch API keys');
+    }
+    
+    return data.apiKeys;
+  } catch (error) {
+    console.error("Error fetching API keys:", error);
+    throw error;
   }
-  mockApiKeys.push(newApiKey)
-  return value
 }
 
-async function deleteApiKey(id) {
-  // In a real app, you'd call your backend or database
-  mockApiKeys = mockApiKeys.filter((key) => key.id !== id)
+async function createApiKey(baseUrl, token, { name, email, password }) {
+  try {
+    const response = await fetch(`${baseUrl}/api/user/create-api-key`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name,           // Add name to the request body
+        email,
+        emailPassword: password,
+        emailService: "gmail" // Default service
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to create API key');
+    }
+    
+    // Store new key in local storage for retrieval
+    if (data.apiKey) {
+      try {
+        // Get existing API keys or initialize empty array
+        const storedApiKeys = JSON.parse(localStorage.getItem('apiKeys') || '[]');
+        
+        // Add new API key with proper name and timestamp
+        storedApiKeys.push({
+          id: data.apiKey._id || data.apiKey.id,
+          name: name,
+          email: email,
+          createdAt: new Date().toISOString(),
+          keyFragment: data.apiKey.key.substring(data.apiKey.key.length - 4)
+        });
+        
+        // Store back to localStorage
+        localStorage.setItem('apiKeys', JSON.stringify(storedApiKeys));
+      } catch (storageError) {
+        console.error("Failed to save API key to local storage:", storageError);
+      }
+    }
+    
+    return {
+      apiKey: {
+        ...data.apiKey,
+        name: name // Ensure name is part of the returned API key object
+      },
+      apiEndpoints: data.apiEndpoints,
+      gmailWarning: data.gmailWarning
+    };
+  } catch (error) {
+    console.error("Error creating API key:", error);
+    throw error;
+  }
+}
+
+async function deleteApiKey(baseUrl, token, id) {
+  try {
+    const response = await fetch(`${baseUrl}/api/user/api-key/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to delete API key');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error("Error deleting API key:", error);
+    throw error;
+  }
+}
+
+/* --------------------------
+   Payment Verification
+-------------------------- */
+async function verifyPayment(paymentDetails) {
+  try {
+    // Replace with your actual API endpoint
+    const response = await fetch('http://localhost:5000/api/user/verify-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
+      },
+      body: JSON.stringify({
+        paymentId: paymentDetails.razorpay_payment_id,
+        paymentLinkId: paymentDetails.razorpay_payment_link_id,
+        referenceId: paymentDetails.razorpay_payment_link_reference_id,
+        paymentStatus: paymentDetails.razorpay_payment_link_status,
+        signature: paymentDetails.razorpay_signature
+      })
+    });
+    
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error verifying payment:', error);
+    return { 
+      success: false, 
+      message: 'Failed to verify payment' 
+    };
+  }
+}
+
+/* --------------------------
+   Payment Status Notification
+-------------------------- */
+function PaymentNotification({ status, message, onClose }) {
+  if (!status) return null;
+  
+  const isSuccess = status === 'success';
+  
+  return (
+    <div className={`payment-notification ${isSuccess ? 'success' : 'error'}`}>
+      <div className="notification-icon">
+        {isSuccess ? <CheckCircle size={24} /> : <AlertCircle size={24} />}
+      </div>
+      <div className="notification-message">
+        <h4>{isSuccess ? 'Payment Successful' : 'Payment Issue'}</h4>
+        <p>{message}</p>
+      </div>
+      <button className="notification-close" onClick={onClose}>
+        <X size={20} />
+      </button>
+    </div>
+  );
 }
 
 /* --------------------------
@@ -42,6 +172,8 @@ function CreateApiKeyModal({ isOpen, onClose, onSuccess }) {
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
+
+  const { url, token } = useContext(StoreContext);
 
   const validate = () => {
     const newErrors = {}
@@ -61,11 +193,12 @@ function CreateApiKeyModal({ isOpen, onClose, onSuccess }) {
     if (!validate()) return
     setIsSubmitting(true)
     try {
-      const apiKey = await createApiKey({ name, email, password })
-      onSuccess(apiKey)
+      const apiKeyData = await createApiKey(url, token, { name, email, password })
+      onSuccess(apiKeyData)
       resetForm()
     } catch (error) {
       console.error("Failed to create API key:", error)
+      setErrors({ ...errors, server: error.message })
     } finally {
       setIsSubmitting(false)
     }
@@ -154,41 +287,124 @@ function CreateApiKeyModal({ isOpen, onClose, onSuccess }) {
 }
 
 /* --------------------------
-   StoreApiKeyModal
+   StoreApiKeyModal - Fix closing tag errors
 -------------------------- */
-function StoreApiKeyModal({ isOpen, onClose, apiKey }) {
+function StoreApiKeyModal({ isOpen, onClose, apiKeyData }) {
   const [copied, setCopied] = useState(false)
+  const [copyTab, setCopyTab] = useState('key') // 'key', 'baseUrl', 'send', 'verify'
 
-  if (!isOpen || !apiKey) return null
+  if (!isOpen || !apiKeyData) return null
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = async (text) => {
     try {
-      await navigator.clipboard.writeText(apiKey)
+      await navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
       console.error("Failed to copy: ", err)
     }
   }
+  
+  // Get the appropriate text to copy based on selected tab
+  const getCopyText = () => {
+    switch(copyTab) {
+      case 'key':
+        return apiKeyData.apiKey.key;
+      case 'baseUrl':
+        return apiKeyData.apiEndpoints.baseUrl;
+      case 'send':
+        return apiKeyData.apiEndpoints.usage.send;
+      case 'verify':
+        return apiKeyData.apiEndpoints.usage.verify;
+      default:
+        return '';
+    }
+  }
+  
+  // Get a display label for the current tab
+  const getTabLabel = () => {
+    switch(copyTab) {
+      case 'key':
+        return 'API Key';
+      case 'baseUrl':
+        return 'Base URL';
+      case 'send':
+        return 'Send OTP Endpoint';
+      case 'verify':
+        return 'Verify OTP Endpoint';
+      default:
+        return '';
+    }
+  }
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content api-modal-content">
         <button className="modal-close" onClick={onClose}>
           <X size={24} />
         </button>
-        <h3 className="modal-title">Store your API key</h3>
+        <h3 className="modal-title">Your API Key Details</h3>
 
         <p className="modal-paragraph">
-          Use the following API key to connect to your project. This token will only be accessible this time; make sure
-          to store it before closing this view.
+          Save these details securely. This is the only time you'll see the complete API key.
         </p>
+        
+        {apiKeyData.gmailWarning && (
+          <div className="warning-message">
+            <AlertCircle size={20} />
+            <p>{apiKeyData.gmailWarning}</p>
+          </div>
+        )}
+        
+        <div className="api-tabs-container">
+          <div className="api-tabs">
+            <button 
+              className={`api-tab ${copyTab === 'key' ? 'active' : ''}`}
+              onClick={() => setCopyTab('key')}
+            >
+              API Key
+            </button>
+            <button 
+              className={`api-tab ${copyTab === 'baseUrl' ? 'active' : ''}`}
+              onClick={() => setCopyTab('baseUrl')}
+            >
+              Base URL
+            </button>
+            <button 
+              className={`api-tab ${copyTab === 'send' ? 'active' : ''}`}
+              onClick={() => setCopyTab('send')}
+            >
+              Send OTP
+            </button>
+            <button 
+              className={`api-tab ${copyTab === 'verify' ? 'active' : ''}`}
+              onClick={() => setCopyTab('verify')}
+            >
+              Verify OTP
+            </button>
+          </div>
+        </div>
+        
+        <div className="endpoint-label">{getTabLabel()}</div>
+        <div className="api-key-container">
+          <div className="api-key-box">
+            <div className="api-key-text">{getCopyText()}</div>
+            <button 
+              className="api-key-copy" 
+              onClick={() => copyToClipboard(getCopyText())}
+            >
+              {copied ? <span>Copied!</span> : <Copy size={16} />}
+            </button>
+          </div>
+        </div>
 
-        <div className="api-key-box">
-          <div className="api-key-text">{apiKey}</div>
-          <button className="api-key-copy" onClick={copyToClipboard}>
-            {copied ? "Copied!" : <Copy size={16} />}
-          </button>
+        <div className="endpoint-help">
+          {copyTab === 'send' && (
+            <p>Replace <code>{"{recipient}"}</code> with the email address where the OTP should be sent.</p>
+          )}
+          {copyTab === 'verify' && (
+            <p>Replace <code>{"{recipient}"}</code> with the email address and <code>{"{otp}"}</code> with the OTP code to verify.</p>
+          )}
         </div>
 
         <div className="modal-footer">
@@ -199,20 +415,23 @@ function StoreApiKeyModal({ isOpen, onClose, apiKey }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /* --------------------------
-   DeleteApiKeyModal
+   DeleteApiKeyModal - Fix closing tag syntax
 -------------------------- */
 function DeleteApiKeyModal({ isOpen, onClose, apiKey, onConfirm }) {
   const [confirmation, setConfirmation] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
 
   if (!isOpen || !apiKey) return null
+  
+  // Get the display name for the API key (use name first, then fallback to email)
+  const apiKeyName = apiKey.name || apiKey.emailConfig?.email || apiKey.email || "this API key";
 
   const handleDelete = async () => {
-    if (confirmation !== apiKey.name) return
+    if (confirmation !== apiKeyName) return
     setIsDeleting(true)
     try {
       await onConfirm()
@@ -236,12 +455,20 @@ function DeleteApiKeyModal({ isOpen, onClose, apiKey, onConfirm }) {
           <X size={24} />
         </button>
         <h3 className="modal-title">Delete API Key</h3>
+        
+        <div className="api-key-delete-info">
+          <h4>API Key: <span className="highlight-name">{apiKeyName}</span></h4>
+          {apiKey.emailConfig?.email && apiKey.emailConfig.email !== apiKeyName && (
+            <p>Email: {apiKey.emailConfig.email}</p>
+          )}
+        </div>
+        
         <p className="modal-paragraph">
-          You are about to delete the <strong>{apiKey.name}</strong> API key. Any application using this API key will no
+          You are about to delete this API key. Any application using this API key will no
           longer be able to authenticate requests.
         </p>
         <p className="modal-paragraph">
-          To confirm, please type <strong>"{apiKey.name}"</strong> in the box below:
+          To confirm, please type <strong>"{apiKeyName}"</strong> in the box below:
         </p>
         <input
           placeholder="Type to confirm"
@@ -257,18 +484,18 @@ function DeleteApiKeyModal({ isOpen, onClose, apiKey, onConfirm }) {
           <button
             className="btn-danger"
             onClick={handleDelete}
-            disabled={confirmation !== apiKey.name || isDeleting}
+            disabled={confirmation !== apiKeyName || isDeleting}
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /* --------------------------
-   Main Page (Studio Page)
+   Main Page (Studio Page) - Enhance with local storage API key info
 -------------------------- */
 export default function StudioPage() {
   const [apiKeys, setApiKeys] = useState([])
@@ -276,55 +503,214 @@ export default function StudioPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [newApiKey, setNewApiKey] = useState(null)
+  const [newApiKeyData, setNewApiKeyData] = useState(null)
   const [selectedApiKey, setSelectedApiKey] = useState(null)
+  const [paymentNotification, setPaymentNotification] = useState(null)
+  const [error, setError] = useState(null)
+
+  // Get URL and token from context
+  const { url, token } = useContext(StoreContext)
+
+  // Parse URL query parameters
+  const getQueryParams = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const params = {};
+    
+    // Convert query params to object
+    for (const [key, value] of queryParams.entries()) {
+      params[key] = value;
+    }
+    
+    return params;
+  };
 
   // Load API Keys on mount
   useEffect(() => {
-    loadApiKeys()
-  }, [])
+    if (token) {
+      loadApiKeys()
+    }
+  }, [token, url])
+  
+  // Check for payment redirect and handle status
+  useEffect(() => {
+    const handlePaymentRedirect = async () => {
+      const params = getQueryParams();
+      
+      // First check for status from direct server callback
+      if (params.status === 'success' && params.orderId) {
+        setPaymentNotification({
+          status: 'success',
+          message: 'Your payment was successful! Credits have been added to your wallet.'
+        });
+        
+        // Clean up the URL to remove query parameters
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+      
+      // If no direct server callback status, check for Razorpay params to verify client-side
+      if (
+        params.razorpay_payment_id &&
+        params.razorpay_payment_link_id &&
+        params.razorpay_payment_link_reference_id &&
+        params.razorpay_signature
+      ) {
+        try {
+          // Show loading notification
+          setPaymentNotification({
+            status: 'processing',
+            message: 'Verifying your payment...'
+          });
+          
+          // Verify the payment with backend
+          const result = await verifyPayment(params);
+          
+          if (result.success) {
+            // Payment verification successful
+            setPaymentNotification({
+              status: 'success',
+              message: 'Your payment was successful! Credits have been added to your wallet.'
+            });
+          } else {
+            // Payment verification failed
+            setPaymentNotification({
+              status: 'error',
+              message: result.message || 'Payment verification failed. Please contact support.'
+            });
+          }
+          
+          // Clean up the URL to remove query parameters
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (error) {
+          console.error('Error handling payment redirect:', error);
+          setPaymentNotification({
+            status: 'error',
+            message: 'Something went wrong while verifying your payment.'
+          });
+        }
+      }
+    };
+    
+    handlePaymentRedirect();
+  }, []);
 
+  // Load API Keys from server and enhance with local storage data
   const loadApiKeys = async () => {
     setIsLoading(true)
+    setError(null)
     try {
-      const keys = await fetchApiKeys()
+      let keys = await fetchApiKeys(url, token)
+      
+      // Get locally stored API key information
+      try {
+        const localKeys = JSON.parse(localStorage.getItem('apiKeys') || '[]');
+        
+        // Enhance server keys with locally stored names when possible
+        keys = keys.map(serverKey => {
+          const keyId = serverKey._id || serverKey.id;
+          const keyFragment = serverKey.key?.substring(serverKey.key.length - 4);
+          
+          // Try to find matching key in local storage
+          const localMatch = localKeys.find(localKey => 
+            (localKey.id && localKey.id === keyId) || 
+            (keyFragment && localKey.keyFragment === keyFragment)
+          );
+          
+          // If we found a match, use the name from local storage
+          if (localMatch && localMatch.name) {
+            return {
+              ...serverKey,
+              name: localMatch.name // Override with locally stored name
+            };
+          }
+          
+          return serverKey;
+        });
+      } catch (localStoreError) {
+        console.error("Failed to retrieve API keys from local storage:", localStoreError);
+      }
+      
       setApiKeys(keys)
     } catch (error) {
       console.error("Failed to load API keys:", error)
+      setError("Failed to load API keys. Please try again later.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleCreateSuccess = (apiKeyValue) => {
-    setNewApiKey(apiKeyValue)
+  const handleCreateSuccess = (apiKeyData) => {
+    setNewApiKeyData(apiKeyData)
     setIsCreateModalOpen(false)
     setIsStoreModalOpen(true)
-    loadApiKeys()
+    
+    // Enhanced reload to ensure newly created key appears in the table
+    setTimeout(() => {
+      loadApiKeys() // Refresh API keys list
+    }, 500) // Small delay to ensure backend has processed the creation
   }
 
   const handleStoreModalClose = () => {
     setIsStoreModalOpen(false)
-    setNewApiKey(null)
+    setNewApiKeyData(null)
   }
 
+  // Improved handleDeleteClick with better debugging
   const handleDeleteClick = (apiKey) => {
-    setSelectedApiKey(apiKey)
-    setIsDeleteModalOpen(true)
+    console.log("Deleting API key:", apiKey);
+    setSelectedApiKey(apiKey);
+    setIsDeleteModalOpen(true);
   }
 
+  // Update handleDeleteConfirm to also remove from localStorage
   const handleDeleteConfirm = async () => {
-    if (!selectedApiKey) return
+    if (!selectedApiKey) return;
+    
     try {
-      await deleteApiKey(selectedApiKey.id)
-      setApiKeys(apiKeys.filter((key) => key.id !== selectedApiKey.id))
-      setIsDeleteModalOpen(false)
-      setSelectedApiKey(null)
+      // Log the deletion attempt
+      console.log("Confirming deletion of:", selectedApiKey);
+      
+      // Get the ID in a more reliable way
+      const apiKeyId = selectedApiKey._id || selectedApiKey.id;
+      console.log("API Key ID for deletion:", apiKeyId);
+      
+      if (!apiKeyId) {
+        console.error("No valid ID found for deletion");
+        throw new Error("Invalid API key ID");
+      }
+      
+      // Make the API call
+      await deleteApiKey(url, token, apiKeyId);
+      
+      // Filter out the deleted key
+      setApiKeys(apiKeys.filter((key) => {
+        const keyId = key._id || key.id;
+        return keyId !== apiKeyId;
+      }));
+      
+      // Also remove from localStorage if it exists
+      try {
+        const keyFragment = selectedApiKey.key?.substring(selectedApiKey.key.length - 4);
+        
+        const storedApiKeys = JSON.parse(localStorage.getItem('apiKeys') || '[]');
+        const updatedKeys = storedApiKeys.filter(key => 
+          (key.id !== apiKeyId) && (key.keyFragment !== keyFragment)
+        );
+        
+        localStorage.setItem('apiKeys', JSON.stringify(updatedKeys));
+      } catch (storageError) {
+        console.error("Failed to update localStorage:", storageError);
+      }
+      
+      setIsDeleteModalOpen(false);
+      setSelectedApiKey(null);
     } catch (error) {
-      console.error("Failed to delete API key:", error)
+      console.error("Failed to delete API key:", error);
+      alert("Error deleting API key: " + error.message);
     }
   }
 
+  // Make the table more responsive on mobile
   return (
     <div className="studio-page">
       {/* Top Header */}
@@ -347,11 +733,20 @@ export default function StudioPage() {
         </div>
       </header>
 
+      {/* Payment Notification */}
+      {paymentNotification && (
+        <PaymentNotification 
+          status={paymentNotification.status} 
+          message={paymentNotification.message}
+          onClose={() => setPaymentNotification(null)}
+        />
+      )}
+
       {/* Main Content */}
       <main className="studio-main">
         <div className="studio-card">
           <div className="studio-card-header">
-            <div>
+            <div className="card-header-text">
               <h2 className="card-title">API Keys</h2>
               <p className="card-description">Manage API keys for your environment</p>
             </div>
@@ -365,6 +760,11 @@ export default function StudioPage() {
               <div className="loading-spinner">
                 <div className="spinner" />
               </div>
+            ) : error ? (
+              <div className="error-message">
+                <AlertCircle size={24} />
+                <p>{error}</p>
+              </div>
             ) : apiKeys.length === 0 ? (
               <div className="no-keys-box">
                 <h3 className="no-keys-title">API Keys</h3>
@@ -375,36 +775,72 @@ export default function StudioPage() {
                 </button>
               </div>
             ) : (
-              <div className="table-wrapper">
+              <div className="table-responsive-wrapper">
                 <table className="studio-table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Value</th>
-                      <th>Created at</th>
+                      <th className="hide-on-medium">Email</th>
+                      <th className="hide-on-mobile">Value</th>
+                      <th className="hide-on-mobile">Created</th>
                       <th className="th-action">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {apiKeys.map((apiKey) => (
-                      <tr key={apiKey.id}>
-                        <td>{apiKey.name}</td>
-                        <td>
-                          {"*".repeat(12)}
-                          {apiKey.value.substring(apiKey.value.length - 4)}
-                        </td>
-                        <td>{new Date(apiKey.createdAt).toLocaleString()}</td>
-                        <td className="td-action">
-                          <button
-                            className="btn-ghost-icon"
-                            onClick={() => handleDeleteClick(apiKey)}
-                            aria-label={`Delete API key ${apiKey.name}`}
-                          >
-                            <Trash2 className="trash-icon" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {apiKeys.map((apiKey) => {
+                      // Ensure API key has all required fields
+                      const keyId = apiKey._id || apiKey.id || Math.random().toString();
+                      // Prioritize name from the apiKey object, which may be enhanced from localStorage
+                      const keyName = apiKey.name || apiKey.emailConfig?.email || apiKey.email || "Unnamed API Key";
+                      const keyEmail = apiKey.emailConfig?.email || apiKey.email || "—";
+                      const keyCreatedAt = apiKey.createdAt ? new Date(apiKey.createdAt) : new Date();
+                      const keyValue = apiKey.key || "••••••••••••";
+                      
+                      return (
+                        <tr key={keyId} className="api-key-row">
+                          <td className="api-key-name">
+                            {keyName}
+                            <span className="mobile-details">
+                              {keyEmail !== keyName ? keyEmail : ""}
+                              <span className="mobile-created">
+                                {keyCreatedAt.toLocaleDateString()}
+                              </span>
+                              
+                              {/* Mobile delete button */}
+                              <button
+                                className="mobile-delete-button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(apiKey);
+                                }}
+                                aria-label={`Delete API key ${keyName}`}
+                              >
+                                <Trash2 size={16} /> Delete
+                              </button>
+                            </span>
+                          </td>
+                          <td className="hide-on-medium api-key-email">
+                            {keyEmail}
+                          </td>
+                          <td className="hide-on-mobile api-key-value">
+                            {"*".repeat(12)}
+                            {keyValue.substring(keyValue.length - 4)}
+                          </td>
+                          <td className="hide-on-mobile api-key-date">
+                            {keyCreatedAt.toLocaleString()}
+                          </td>
+                          <td className="td-action desktop-only-action">
+                            <button
+                              className="btn-ghost-icon"
+                              onClick={() => handleDeleteClick(apiKey)}
+                              aria-label={`Delete API key ${keyName}`}
+                            >
+                              <Trash2 className="trash-icon" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -423,7 +859,7 @@ export default function StudioPage() {
         <StoreApiKeyModal
           isOpen={isStoreModalOpen}
           onClose={handleStoreModalClose}
-          apiKey={newApiKey}
+          apiKeyData={newApiKeyData}
         />
 
         {/* Delete Key Modal */}

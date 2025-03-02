@@ -1,19 +1,42 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Mail, MapPin, Phone, Linkedin, Facebook, Twitter, CheckCircle } from "lucide-react"
+import { Link, useLocation } from "react-router-dom"
 import "./Footer.css"
 
 export default function Footer() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const location = useLocation()
+
+  // Check if user is logged in on component mount and route changes
+  useEffect(() => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+    setIsLoggedIn(!!token)
+  }, [location])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
+    setIsLoggedIn(false)
+    // No need to navigate as the page will refresh or redirect automatically
+  }
+  
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="footer">
       {/* CTA Section */}
       <div className="footer-cta">
         <h2 className="footer-cta-title">Ready to secure your authentication?</h2>
         <p className="footer-cta-subtitle">
           Join thousands of businesses that trust AlphaOTP for their security needs.
         </p>
-        <a href="/login" className="footer-cta-button">
-          Login
-        </a>
+        {isLoggedIn ? (
+          <button onClick={handleLogout} className="footer-cta-button">
+            Logout
+          </button>
+        ) : (
+          <Link to="/login" className="footer-cta-button">
+            Login
+          </Link>
+        )}
       </div>
 
       {/* Main Footer Content */}

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Check,
   AlertTriangle,
@@ -13,19 +14,85 @@ import {
 } from "lucide-react";
 import OopsPopup from "../oops/oops";
 import "./pricing.css";
+import { StoreContext } from "../../context/StoreContext";
 
 export default function Pricing() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const isLoggedIn = false;
-
-  const handleSelectPlan = (plan) => {
-    if (!isLoggedIn) {
-      setShowPopup(true);
-    } else {
-      setSelectedPlan(plan);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  
+  // Get query parameters
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  
+  // Use safe access with optional chaining and default values
+  const context = useContext(StoreContext);
+  const token = context?.token || '';
+  const url = context?.url || 'http://localhost:5000';
+  
+  // Check for payment status in URL when component mounts
+  useEffect(() => {
+    const status = queryParams.get('status');
+    const reason = queryParams.get('reason');
+    
+    if (status === 'failed') {
+      setError(`Payment failed: ${reason || 'Unknown reason'}`);
       setShowModal(true);
+    }
+  }, [location.search]);
+  
+  // Define plan details with creditsPurchased instead of credits
+  const planDetails = {
+    basic: { amount: 999, creditsPurchased: 5000, name: "Starter" },
+    pro: { amount: 2999, creditsPurchased: 50000, name: "Pro" },
+    enterprise: { amount: 7999, creditsPurchased: 200000, name: "Enterprise" }
+  };
+
+  const handleSelectPlan = async (plan) => {
+    if (!token) {
+      setShowPopup(true);
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      setError(null);
+      const planData = planDetails[plan];
+      
+      const response = await fetch(`${url}/api/user/plan-pay`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          amount: planData.amount,
+          creditsPurchased: planData.creditsPurchased
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to initiate payment');
+      }
+      
+      const data = await response.json();
+      
+      // Use payment_link from the response
+      if (data.payment_link) {
+        window.location.href = data.payment_link;
+      } else {
+        throw new Error('Payment link not received');
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      setError(err.message);
+      setShowModal(true);
+    } finally {
+      setIsLoading(false);
+      setSelectedPlan(plan);
     }
   };
 
@@ -186,24 +253,27 @@ export default function Pricing() {
                   <button 
                     className={`plan-button basic-button ${selectedPlan === 'basic' ? 'selected-plan' : ''}`}
                     onClick={() => handleSelectPlan('basic')}
+                    disabled={isLoading}
                   >
-                    Select Starter
+                    {isLoading && selectedPlan === 'basic' ? 'Processing...' : 'Select Starter'}
                   </button>
                 </td>
                 <td className="table-cell text-center highlighted-cell">
                   <button 
                     className={`plan-button pro-button ${selectedPlan === 'pro' ? 'selected-plan' : ''}`}
                     onClick={() => handleSelectPlan('pro')}
+                    disabled={isLoading}
                   >
-                    Select Pro
+                    {isLoading && selectedPlan === 'pro' ? 'Processing...' : 'Select Pro'}
                   </button>
                 </td>
                 <td className="table-cell text-center">
                   <button 
                     className={`plan-button enterprise-button ${selectedPlan === 'enterprise' ? 'selected-plan' : ''}`}
                     onClick={() => handleSelectPlan('enterprise')}
+                    disabled={isLoading}
                   >
-                    Select Enterprise
+                    {isLoading && selectedPlan === 'enterprise' ? 'Processing...' : 'Select Enterprise'}
                   </button>
                 </td>
               </tr>
@@ -212,24 +282,30 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* Confirmation Modal */}
+      {/* Confirmation/Error Modal */}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-content">
             <button className="modal-close" onClick={closeModal}>
               <X size={24} />
             </button>
-            <h3 className="modal-title">Plan Selected</h3>
-            <p className="modal-message">
-              You've selected the <span className="selected-plan-name">
-                {selectedPlan === 'basic' && 'Starter'}
-                {selectedPlan === 'pro' && 'Pro'}
-                {selectedPlan === 'enterprise' && 'Enterprise'}
-              </span> plan!
-            </p>
-            <p>Our team will contact you shortly to complete the setup.</p>
+            <h3 className="modal-title">{error ? 'Error' : 'Plan Selected'}</h3>
+            {error ? (
+              <p className="modal-message error-message">{error}</p>
+            ) : (
+              <>
+                <p className="modal-message">
+                  You've selected the <span className="selected-plan-name">
+                    {selectedPlan === 'basic' && 'Starter'}
+                    {selectedPlan === 'pro' && 'Pro'}
+                    {selectedPlan === 'enterprise' && 'Enterprise'}
+                  </span> plan!
+                </p>
+                <p>Redirecting you to payment...</p>
+              </>
+            )}
             <button className="modal-button" onClick={closeModal}>
-              Got it!
+              {error ? 'Try Again' : 'Got it!'}
             </button>
           </div>
         </div>

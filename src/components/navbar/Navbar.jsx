@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Shield } from "lucide-react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import OopsPopup from "../oops/oops"
@@ -7,8 +7,15 @@ import "./Navbar.css"
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [showOopsPopup, setShowOopsPopup] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+
+  // Check if user is logged in on component mount and route changes
+  useEffect(() => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+    setIsLoggedIn(!!token)
+  }, [location])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -16,6 +23,14 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setIsMenuOpen(false)
+  }
+
+  const handleLogout = () => {
+    // Remove token from both storage options
+    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
+    setIsLoggedIn(false)
+    navigate('/')
   }
 
   const handleGetAlphaOTP = (e) => {
@@ -83,10 +98,16 @@ export default function Navbar() {
             </a>
           </nav>
 
-          {/* Desktop Login Button */}
-          <Link to="/login" className="navbar-login-button">
-            Login
-          </Link>
+          {/* Desktop Login/Logout Button */}
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="navbar-login-button">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="navbar-login-button">
+              Login
+            </Link>
+          )}
 
           {/* Mobile Menu Button (Hamburger) */}
           <button
@@ -126,13 +147,27 @@ export default function Navbar() {
           <a href="#" className="mobile-menu-link" onClick={(e) => { e.preventDefault(); scrollToSection('footer'); }}>
             Contact
           </a>
-          <Link
-            to="/login"
-            className="mobile-menu-button"
-            onClick={closeMenu}
-          >
-            Login
-          </Link>
+          
+          {/* Mobile Login/Logout Button */}
+          {isLoggedIn ? (
+            <button
+              className="mobile-menu-button"
+              onClick={() => {
+                closeMenu()
+                handleLogout()
+              }}
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="mobile-menu-button"
+              onClick={closeMenu}
+            >
+              Login
+            </Link>
+          )}
         </div>
       </header>
 

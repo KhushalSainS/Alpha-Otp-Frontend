@@ -1,23 +1,29 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from 'react';
-import { Eye, EyeOff } from "lucide-react"
-import OopsPopup from "../../components/oops/oops"
-import { StoreContext } from "../../context/StoreContext"
-import "./login.css"
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import OopsPopup from "../../components/oops/oops";
+import { StoreContext } from "../../context/StoreContext";
+import "./login.css";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showOops, setShowOops] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const { url, setToken } = useContext(StoreContext)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOops, setShowOops] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { url, setToken } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
+
+  const handleClose = () => {
+    navigate('/');
+  };
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     
     try {
       const response = await axios.post(`${url}/api/user/login`, {
@@ -37,7 +43,7 @@ export default function LoginPage() {
       console.error("Login failed:", error)
       setShowOops(true)
     }
-  }
+  };
 
   return (
     <main className="login-page">
@@ -54,7 +60,7 @@ export default function LoginPage() {
             </div>
             <span className="logo-text">AlphaOTP</span>
           </div>
-          <button className="close-button">
+          <button className="close-button" onClick={handleClose}>
             <svg width="24" height="24" viewBox="0 0 24 24">
               <path
                 d="M18 6L6 18M6 6L18 18"
@@ -129,5 +135,5 @@ export default function LoginPage() {
 
       {showOops && <OopsPopup onClose={() => setShowOops(false)} />}
     </main>
-  )
+  );
 }

@@ -267,6 +267,11 @@
   margin: 1rem;
 }
 
+/* Enhanced modal for API key display */
+.api-modal-content {
+  max-width: 36rem;  /* Slightly wider modal for endpoints */
+}
+
 /* Close Button */
 .modal-close {
   position: absolute;
@@ -425,4 +430,835 @@
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+/* 
+  Payment Notification
+*/
+.payment-notification {
+  position: fixed;
+  top: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 320px;
+  max-width: 450px;
+  animation: slide-in 0.3s ease-out;
+}
+
+.payment-notification.success {
+  background-color: #ecfdf5; /* green-50 */
+  border-left: 4px solid #10b981; /* green-500 */
+}
+
+.payment-notification.error {
+  background-color: #fef2f2; /* red-50 */
+  border-left: 4px solid #dc2626; /* red-600 */
+}
+
+.notification-icon {
+  margin-right: 1rem;
+}
+
+.payment-notification.success .notification-icon {
+  color: #10b981; /* green-500 */
+}
+
+.payment-notification.error .notification-icon {
+  color: #dc2626; /* red-600 */
+}
+
+.notification-message {
+  flex: 1;
+}
+
+.notification-message h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.notification-message p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4b5563; /* gray-600 */
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: #9ca3af; /* gray-400 */
+  margin-left: 1rem;
+}
+
+.notification-close:hover {
+  color: #4b5563; /* gray-600 */
+}
+
+@keyframes slide-in {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* Add these styles to your existing studio.css file */
+
+.api-tabs {
+  display: flex;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.api-tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  border-bottom: 2px solid transparent;
+}
+
+.api-tab.active {
+  color: #0072f5;
+  border-bottom: 2px solid #0072f5;
+  font-weight: 500;
+}
+
+.warning-message {
+  display: flex;
+  padding: 12px;
+  background-color: #fff8e1;
+  border-left: 4px solid #ffc107;
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+.warning-message svg {
+  color: #ffc107;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.warning-message p {
+  margin: 0;
+  font-size: 14px;
+  color: #664d03;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border-radius: 4px;
+}
+
+.error-message svg {
+  margin-right: 12px;
+}
+
+/* Enhanced modal for API key display */
+.api-modal-content {
+  max-width: 36rem;  /* Slightly wider modal for endpoints */
+}
+
+.api-tabs {
+  display: flex;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  overflow-x: auto;  /* Allow tabs to scroll on small screens */
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.api-tab {
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #6b7280;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.api-tab.active {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+  font-weight: 500;
+}
+
+.api-tab:hover:not(.active) {
+  color: #4b5563;
+  border-bottom-color: #d1d5db;
+}
+
+.endpoint-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.api-key-box {
+  position: relative;
+  background-color: #111827;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.api-key-text {
+  white-space: nowrap;
+  font-size: 0.875rem;
+  padding-right: 2.5rem; /* space for copy button */
+  line-height: 1.5;
+}
+
+.api-key-copy {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.api-key-copy:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.endpoint-help {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.endpoint-help code {
+  background: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.warning-message {
+  display: flex;
+  padding: 0.75rem;
+  background-color: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+}
+
+.warning-message svg {
+  color: #f59e0b;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.warning-message p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #78350f;
+}
+
+/* 
+  Mobile Responsive Styles - Added to fix UI/UX error
+*/
+@media screen and (max-width: 768px) {
+  .studio-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .studio-card-header .btn-primary {
+    align-self: flex-start;
+  }
+  
+  .hide-on-mobile {
+    display: none;
+  }
+  
+  .mobile-created {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+  
+  .api-key-email {
+    font-weight: 500;
+  }
+  
+  .modal-content {
+    margin: 0.5rem;
+    padding: 1.25rem;
+    max-width: calc(100% - 2rem);
+  }
+  
+  .api-tabs {
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .api-tab {
+    padding: 0.5rem;
+    font-size: 0.813rem;
+  }
+  
+  .api-modal-content {
+    max-width: calc(100% - 2rem);
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .modal-footer button {
+    width: 100%;
+  }
+  
+  .api-key-box {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .api-key-text {
+    font-size: 0.75rem;
+    padding-right: 3rem;
+  }
+  
+  .endpoint-help code {
+    word-break: break-all;
+  }
+  
+  .studio-page {
+    overflow-x: hidden;
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+  }
+  
+  .card-description {
+    font-size: 1rem;
+  }
+}
+
+/* Table responsive styles */
+.table-responsive-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 
+  Fixed footer for modals
+*/
+@media screen and (max-height: 600px) {
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* Make the copied state more visible */
+.api-key-copy {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.api-key-copy:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Green success state for copy button */
+.api-key-copy:has(span) {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+/* 
+  API key display improvements
+*/
+.api-tabs-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 0.25rem;
+}
+
+.api-tabs {
+  display: flex;
+  min-width: max-content;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 2px;
+}
+
+.api-key-container {
+  position: relative;
+  max-width: 100%;
+  margin-bottom: 1rem;
+}
+
+.api-key-box {
+  position: relative;
+  background-color: #111827;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.api-key-text {
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  padding-right: 3.5rem; /* more space for copy button */
+  overflow-x: visible;
+}
+
+.api-key-copy span {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* API key name in table */
+.api-key-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+.mobile-details {
+  display: none;
+  font-weight: normal;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Media queries for better mobile responsiveness */
+@media screen and (max-width: 768px) {
+  /* ...existing code... */
+  
+  .mobile-details {
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  .api-modal-content {
+    max-width: calc(100% - 2rem);
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .api-key-container {
+    margin-bottom: 0.75rem;
+  }
+  
+  .api-key-text {
+    font-size: 0.75rem;
+    padding-right: 3.5rem;
+    line-height: 1.4;
+  }
+  
+  .api-key-copy {
+    padding: 0.15rem 0.35rem;
+    right: 0.35rem;
+  }
+  
+  .modal-title {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .modal-paragraph {
+    font-size: 0.813rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .api-tabs button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.813rem;
+  }
+  
+  .endpoint-help {
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .endpoint-help code {
+    word-break: break-word;
+  }
+  
+  .api-tabs-container:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(to right, transparent, white);
+    pointer-events: none;
+    opacity: 0.8;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .hide-on-medium {
+    display: none;
+  }
+  
+  .modal-title {
+    font-size: 1rem;
+  }
+  
+  .api-key-text {
+    font-size: 0.688rem;
+  }
+}
+
+/* Make the copy button more visible */
+.api-key-copy {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 1.75rem;
+  min-width: 2.5rem;
+  justify-content: center;
+}
+
+.api-key-copy:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 
+  API key delete modal enhancements
+*/
+.api-key-delete-info {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border-left: 3px solid #2563eb;
+}
+
+.api-key-delete-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.api-key-delete-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.highlight-name {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* API key row enhancements */
+.api-key-row {
+  transition: background-color 0.2s;
+}
+
+.api-key-row:hover {
+  background-color: #f9fafb;
+}
+
+.api-key-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+.api-key-email {
+  color: #4b5563;
+}
+
+.api-key-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+.api-key-date {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.mobile-details {
+  display: none;
+  font-weight: normal;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Highlight newly created items */
+.api-key-row.new {
+  animation: highlight-row 2s ease-out;
+}
+
+@keyframes highlight-row {
+  0% {
+    background-color: rgba(219, 234, 254, 0.7); /* light blue bg */
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* Error state for confirmation input */
+.form-input.error {
+  border-color: #dc2626; /* red-600 */
+  background-color: #fef2f2; /* red-50 */
+}
+
+/* Enhanced responsive table for mobile */
+@media screen and (max-width: 768px) {
+  /* ...existing code... */
+  
+  .mobile-details {
+    display: block;
+  }
+  
+  .api-key-delete-info {
+    padding: 0.75rem;
+  }
+  
+  /* Table row spacing for better touch targets */
+  .api-key-row td {
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+  }
+  
+  /* Make delete button more visible on mobile */
+  .btn-ghost-icon {
+    padding: 0.375rem;
+    background-color: rgba(239, 68, 68, 0.05);
+    border-radius: 0.25rem;
+  }
+  
+  .btn-ghost-icon:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  .btn-ghost-icon .trash-icon {
+    color: #ef4444;
+  }
+}
+
+/* Smaller screens get even more condensed view */
+@media screen and (max-width: 380px) {
+  .studio-card-content {
+    padding: 0.75rem;
+  }
+  
+  .api-key-name {
+    font-size: 0.938rem;
+  }
+  
+  .mobile-details {
+    font-size: 0.688rem;
+  }
+  
+  .api-key-delete-info h4 {
+    font-size: 0.938rem;
+  }
+}
+
+/* 
+  Mobile Delete Button - Fix accessibility issue
+*/
+.mobile-delete-button {
+  display: none; /* Hidden by default - will show in mobile view */
+  margin-top: 0.625rem;
+  background-color: #fee2e2; /* Red-50 */
+  color: #ef4444; /* Red-500 */
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.mobile-delete-button:hover {
+  background-color: #fecaca; /* Red-200 */
+}
+
+.desktop-only-action {
+  display: table-cell;
+}
+
+/* Enhanced responsive table for mobile */
+@media screen and (max-width: 768px) {
+  /* ...existing code... */
+  
+  /* Show mobile delete button and hide desktop button */
+  .mobile-delete-button {
+    display: flex;
+  }
+  
+  .desktop-only-action {
+    display: none;
+  }
+  
+  /* Ensure mobile details has enough space for delete button */
+  .mobile-details {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
+  }
+  
+  /* Increase spacing between rows for better tap targets */
+  .api-key-row {
+    padding: 0.5rem 0;
+  }
+  
+  /* Allow table to take full width in mobile */
+  .studio-table {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  /* Adjust cell padding for better mobile layout */
+  .studio-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  /* Make sure action column doesn't take too much space */
+  .th-action {
+    width: 1rem;
+  }
+  
+  /* StoreApiModal improvements for mobile */
+  .api-modal-content {
+    padding-bottom: 1rem;
+  }
+  
+  /* Ensure modals are accessible even on very small screens */
+  @media screen and (max-height: 500px) {
+    .modal-overlay {
+      align-items: flex-start;
+      padding-top: 1rem;
+    }
+    
+    .modal-content {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 380px) {
+  .mobile-delete-button {
+    padding: 0.3125rem 0.4375rem;
+    font-size: 0.6875rem;
+  }
+  
+  .mobile-details {
+    margin-top: 0.375rem;
+  }
+}
+
+/* Improve API key name display */
+.api-key-name {
+  font-weight: 500;
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+}
+
+.api-key-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Alert indicator for missing API key name */
+.api-key-name.unnamed {
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Improve the modal to show name clearly */
+.api-key-detail-line {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.api-key-detail-label {
+  font-weight: 500;
+  margin-right: 0.5rem;
+  min-width: 4rem;
+}
+
+.api-key-detail-value {
+  color: #111827;
 }

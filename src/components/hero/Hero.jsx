@@ -1,14 +1,48 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { Check } from "lucide-react"
+import { useNavigate, useLocation } from "react-router-dom"
 import OopsPopup from "../oops/oops"
+import { StoreContext } from "../../context/StoreContext"
 import "./Hero.css"
 
 export default function Hero() {
   const [showOopsPopup, setShowOopsPopup] = useState(false)
+  const { token } = useContext(StoreContext)
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const scrollToSection = (sectionId) => {
+    // If we're not on the home page, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/')
+      // Need to use setTimeout to allow for navigation to complete
+      setTimeout(() => {
+        scrollToElementById(sectionId)
+      }, 100)
+    } else {
+      // We're already on home page, just scroll
+      scrollToElementById(sectionId)
+    }
+  }
+  
+  // Helper function to find and scroll to elements
+  const scrollToElementById = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   const handleGetAlphaOTP = (e) => {
     e.preventDefault()
-    setShowOopsPopup(true)
+    
+    if (token) {
+      // Scroll to pricing section if user has token
+      scrollToSection('pricing')
+    } else {
+      // Show OopsPopup if no token
+      setShowOopsPopup(true)
+    }
   }
 
   const closeOopsPopup = () => {

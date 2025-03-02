@@ -43,14 +43,18 @@ function App() {
       <Router>
         <div className="app">
           <Routes>
+            {/* Routes with layout */}
             <Route path="/" element={
               <Layout>
                 <HomePage />
               </Layout>
             } />
+            
+            
+            {/* Other routes with layout */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/studio" element={<ApiPage />} />
+            <Route path="/studio" element={ <ApiPage/>}/>
           </Routes>
         </div>
       </Router>
